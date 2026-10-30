@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dispensador de gaseosas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fondo: #f1e4f4; --tarjeta: #ffffff; --tinta: #14212e; --suave: #5b6b7a;
+    --linea: #c0eef7; --azul: #1d3b5c; --ok: #1f7a4d; --ok-bg: #dff1e7;
+    --mal: #b3261e; --mal-bg: #f8e1df; --aviso: #8a5a00; --aviso-bg: #fbefd2;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--tinta); font-family: "Barlow", system-ui, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 96px; }
+  h1, h2, .num { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 700; margin: 0; }
+  h1 { font-size: 2.2rem; }
+  .conexion { color: var(--suave); margin: 4px 0 24px; }
+  .conexion.caida { color: var(--mal); }
+  .rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .tarjeta { background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 12px; padding: 20px; }
+  .tarjeta h2 { font-size: 1.6rem; }
+  .fila { display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px; }
+  .fila span:first-child { color: var(--suave); }
+  .num { font-size: 2.4rem; }
+  .barra { height: 12px; background: var(--fondo); border-radius: 6px; overflow: hidden; margin-top: 8px; }
+  .barra div { height: 100%; width: 0; background: var(--azul); transition: width .4s; }
+  .insignia { display: inline-block; margin-top: 16px; padding: 6px 12px; border-radius: 6px; font-weight: 500; }
+  .insignia.ok { background: var(--ok-bg); color: var(--ok); }
+  .insignia.mal { background: var(--mal-bg); color: var(--mal); }
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--azul); padding: 10px 18px; }
+  button.principal { background: var(--azul); color: #fff; margin-top: 16px; width: 100%; }
+  button.principal:disabled { background: var(--linea); border-color: var(--linea); color: var(--suave); cursor: not-allowed; }
+  button.secundario { background: transparent; color: var(--azul); }
+  button:focus-visible { outline: 3px solid #5b9bd5; outline-offset: 2px; }
+  dialog { border: 1px solid var(--linea); border-radius: 12px; padding: 24px; width: min(360px, 92vw); }
+  dialog::backdrop { background: rgba(20, 33, 46, .5); }
+  .tamanos { display: grid; gap: 10px; margin: 16px 0; }
+  .tamanos button { background: var(--tarjeta); font-size: 1.1rem; padding: 14px; }
+  .tamanos button:hover:not(:disabled) { background: var(--fondo); }
+  .tamanos button:disabled { color: var(--suave); border-color: var(--linea); cursor: not-allowed; }
+  .aviso { min-height: 1.4em; color: var(--aviso); }
+  #estado { position: fixed; left: 0; right: 0; bottom: 0; padding: 18px 16px; text-align: center;
+            font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1.5rem; }
+  #estado.libre { background: var(--tarjeta); color: var(--suave); border-top: 1px solid var(--linea); }
+  #estado.sirviendo { background: var(--ok-bg); color: var(--ok); }
+  #estado.sin_vaso, #estado.nivel_insuficiente { background: var(--mal-bg); color: var(--mal); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Dispensador de gaseosas</h1>
+  <p class="conexion" id="conexion">Conectando…</p>
+
+  <div class="rejilla">
+    <section class="tarjeta" id="tarjeta-1">
+      <h2>Gaseosa 1</h2>
+      <div class="fila"><span>Temperatura</span><span class="num"><span data-temp>--</span> °C</span></div>
+      <div class="fila"><span>Nivel</span><span class="num"><span data-nivel>--</span> L</span></div>
+      <div class="barra"><div data-barra></div></div>
+      <span class="insignia mal" data-insignia>Sin datos</span>
+      <button class="principal" data-pedir disabled>Pedir</button>
+    </section>
+
+    <section class="tarjeta" id="tarjeta-2">
+      <h2>Gaseosa 2</h2>
+      <div class="fila"><span>Temperatura</span><span class="num"><span data-temp>--</span> °C</span></div>
+      <div class="fila"><span>Nivel</span><span class="num"><span data-nivel>--</span> L</span></div>
+      <div class="barra"><div data-barra></div></div>
+      <span class="insignia mal" data-insignia>Sin datos</span>
+      <button class="principal" data-pedir disabled>Pedir</button>
+    </section>
+  </div>
+</main>
+
+<dialog id="dialogo">
+  <h2 id="dlg-titulo">Gaseosa 1</h2>
+  <p>Cantidad</p>
+  <div class="tamanos">
+    <button data-oz="7">7 oz</button>
+    <button data-oz="9">9 oz</button>
+    <button data-oz="12">12 oz</button>
+  </div>
+  <p class="aviso" id="dlg-aviso"></p>
+  <button class="secundario" id="cerrar">Cerrar</button>
+</dialog>
+
+<div id="estado" class="libre" role="status">Listo para servir</div>
+
+<script>
+// ============ CAMBIA SOLO ESTA LÍNEA (la misma URL que en la ESP32) ============
+const DB_URL = "https://dispensador-de-gaseosa-default-rtdb.firebaseio.com/";
+// ================================================================================
+
+const MENSAJES = {
+  libre: "Listo para servir",
+  sirviendo: "Sirviendo bebida",
+  sin_vaso: "No hay vaso en el lugar",
+  nivel_insuficiente: "No hay suficiente bebida para esa cantidad"
+};
+const OZ_POR_LITRO = 33.814;
+let datos = { 1: null, 2: null };
+let bebidaActual = 1;
+let ultimoTs = null, ultimoCambio = Date.now();
+
+const $ = (s, r = document) => r.querySelector(s);
+
+async function leer(ruta) {
+  const r = await fetch(`${DB_URL}${ruta}.json`);
+  return r.json();
+}
+
+function pintarTarjeta(n, g) {
+  const t = $(`#tarjeta-${n}`);
+  if (!g) return;
+  const disponible = g.disponible && g.nivel >= 0;
+  $("[data-temp]", t).textContent = Number(g.temp).toFixed(1);
+  $("[data-nivel]", t).textContent = Number(g.nivel).toFixed(2);
+  $("[data-barra]", t).style.width = Math.max(0, Math.min(100, g.nivel / 3 * 100)) + "%";
+  const ins = $("[data-insignia]", t);
+  ins.textContent = disponible ? "Disponible" : "No disponible";
+  ins.className = "insignia " + (disponible ? "ok" : "mal");
+  $("[data-pedir]", t).disabled = !disponible;
+}
+
+async function actualizarDatos() {
+  try {
+    const d = await leer("/gaseosas");
+    if (!d) return;
+    datos = { 1: d.g1, 2: d.g2 };
+    pintarTarjeta(1, d.g1);
+    pintarTarjeta(2, d.g2);
+    if (d.ts !== ultimoTs) { ultimoTs = d.ts; ultimoCambio = Date.now(); }
+  } catch (e) { /* se refleja en el indicador de conexión */ }
+  const viva = Date.now() - ultimoCambio < 20000;
+  const c = $("#conexion");
+  c.textContent = viva ? "Conectado al dispensador" : "Sin conexión con el dispensador";
+  c.classList.toggle("caida", !viva);
+}
+
+async function actualizarEstado() {
+  try {
+    const e = await leer("/estado");
+    const clave = (e && e.mensaje) || "libre";
+    const barra = $("#estado");
+    barra.className = clave;
+    barra.textContent = MENSAJES[clave] || clave;
+  } catch (e) {}
+}
+
+// Diálogo de cantidad
+document.querySelectorAll("[data-pedir]").forEach((b, i) => {
+  b.addEventListener("click", () => {
+    bebidaActual = i + 1;
+    $("#dlg-titulo").textContent = "Gaseosa " + bebidaActual;
+    $("#dlg-aviso").textContent = "";
+    const disponibleOz = (datos[bebidaActual]?.nivel || 0) * OZ_POR_LITRO;
+    document.querySelectorAll("[data-oz]").forEach(btn => {
+      btn.disabled = Number(btn.dataset.oz) > disponibleOz;
+    });
+    if (disponibleOz < 12) {
+      $("#dlg-aviso").textContent = `Solo quedan ${disponibleOz.toFixed(1)} oz de esta gaseosa.`;
+    }
+    $("#dialogo").showModal();
+  });
+});
+$("#cerrar").addEventListener("click", () => $("#dialogo").close());
+
+document.querySelectorAll("[data-oz]").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const pedido = { activo: true, bebida: bebidaActual, onzas: Number(btn.dataset.oz) };
+    await fetch(`${DB_URL}/pedido.json`, { method: "PUT", body: JSON.stringify(pedido) });
+    $("#dialogo").close();
+  });
+});
+
+actualizarDatos(); actualizarEstado();
+setInterval(actualizarDatos, 3000);
+setInterval(actualizarEstado, 1500);
+</script>
+</body>
+</html>
