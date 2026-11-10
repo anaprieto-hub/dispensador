@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --fondo: #f1e4f4; --tarjeta: #ffffff; --tinta: #14212e; --suave: #5b6b7a;
+    --fondo: #f6f8fa; --tarjeta: #ffffff; --tinta: #14212e; --suave: #5b6b7a;
     --linea: #c0eef7; --azul: #1d3b5c; --ok: #1f7a4d; --ok-bg: #dff1e7;
     --mal: #b3261e; --mal-bg: #f8e1df; --aviso: #8a5a00; --aviso-bg: #fbefd2;
   }
@@ -21,27 +21,36 @@
   .conexion { color: var(--suave); margin: 4px 0 24px; }
   .conexion.caida { color: var(--mal); }
   .rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
-  .tarjeta { background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 12px; padding: 20px; }
+  .tarjeta { background: var(--c-fondo, var(--tarjeta)); border: 1px solid var(--c-borde, var(--linea)); border-radius: 12px; padding: 20px; }
+  .tarjeta .fila span:first-child { color: #44525f; }
   .tarjeta h2 { font-size: 1.6rem; }
   .cabecera { display: flex; align-items: center; gap: 12px; }
   .logo { width: 56px; height: 56px; object-fit: contain; }
+  .logo[hidden] { display: none; }
+
+  /* Colores pastel de cada gaseosa (cámbialos aquí): fondo, borde y color del botón y la barra */
+  .c1 { --c-fondo: #fbdcdc; --c-borde: #eaa9ac; --c-acento: #a82330; }  /* Coca-Cola: rojo */
+  .c2 { --c-fondo: #d9e8fb; --c-borde: #a9c8ee; --c-acento: #1f4f8f; }  /* Pepsi: azul */
+  .c3 { --c-fondo: #ddf2d6; --c-borde: #b0dca4; --c-acento: #2f6b2f; }  /* Manzana: verde manzana */
+  .c4 { --c-fondo: #fbf2c4; --c-borde: #ecdc88; --c-acento: #7a6400; }  /* Quatro: amarillo limón */
+  .c5 { --c-fondo: #e6dcf7; --c-borde: #c4b0e8; --c-acento: #5b3a8f; }  /* Uva: morado */
   .fila { display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px; }
   .fila span:first-child { color: var(--suave); }
   .num { font-size: 2.4rem; }
-  .barra { height: 12px; background: var(--fondo); border-radius: 6px; overflow: hidden; margin-top: 8px; }
-  .barra div { height: 100%; width: 0; background: var(--azul); transition: width .4s; }
-  .insignia { display: inline-block; margin-top: 16px; padding: 6px 12px; border-radius: 6px; font-weight: 500; }
+  .barra { height: 12px; background: rgba(255, 255, 255, .65); border-radius: 6px; overflow: hidden; margin-top: 8px; }
+  .barra div { height: 100%; width: 0; background: var(--c-acento, var(--azul)); transition: width .4s; }
+  .insignia { display: inline-block; margin-top: 16px; padding: 6px 12px; border-radius: 6px; font-weight: 500; border: 1px solid currentColor; }
   .insignia.ok { background: var(--ok-bg); color: var(--ok); }
   .insignia.mal { background: var(--mal-bg); color: var(--mal); }
   button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--azul); padding: 10px 18px; }
-  button.principal { background: var(--azul); color: #fff; margin-top: 16px; width: 100%; }
+  button.principal { background: var(--c-acento, var(--azul)); border-color: var(--c-acento, var(--azul)); color: #fff; margin-top: 16px; width: 100%; }
   button.principal:disabled { background: var(--linea); border-color: var(--linea); color: var(--suave); cursor: not-allowed; }
-  button.secundario { background: transparent; color: var(--azul); }
+  button.secundario { background: transparent; color: var(--c-acento, var(--azul)); border-color: var(--c-acento, var(--azul)); }
   button:focus-visible { outline: 3px solid #5b9bd5; outline-offset: 2px; }
-  dialog { border: 1px solid var(--linea); border-radius: 12px; padding: 24px; width: min(360px, 92vw); }
+  dialog { background: var(--c-fondo, var(--tarjeta)); color: var(--tinta); border: 1px solid var(--c-borde, var(--linea)); border-radius: 12px; padding: 24px; width: min(360px, 92vw); }
   dialog::backdrop { background: rgba(20, 33, 46, .5); }
   .tamanos { display: grid; gap: 10px; margin: 16px 0; }
-  .tamanos button { background: var(--tarjeta); font-size: 1.1rem; padding: 14px; }
+  .tamanos button { background: #ffffff; border-color: var(--c-acento, var(--azul)); font-size: 1.1rem; padding: 14px; }
   .tamanos button:hover:not(:disabled) { background: var(--fondo); }
   .tamanos button:disabled { color: var(--suave); border-color: var(--linea); cursor: not-allowed; }
   .aviso { min-height: 1.4em; color: var(--aviso); }
@@ -59,36 +68,73 @@
   <p class="conexion" id="conexion">Conectando…</p>
 
   <div class="rejilla">
-    <section class="tarjeta" id="tarjeta-1">
+
+    <!-- ===== 1. COCA-COLA (con datos: temperatura y nivel) ===== -->
+    <section class="tarjeta c1" id="tarjeta-1">
       <div class="cabecera">
-  <img class="logo" src="images.jpg" alt="Logo Coca-Cola">
-  <h2>Coca-Cola</h2>
-</div>
+        <img class="logo" src="images.jpg" alt="Logo Coca-Cola">
+        <h2>Coca-Cola</h2>
+      </div>
       <div class="fila"><span>Temperatura</span><span class="num"><span data-temp>--</span> °C</span></div>
       <div class="fila"><span>Nivel</span><span class="num"><span data-nivel>--</span> L</span></div>
       <div class="barra"><div data-barra></div></div>
       <span class="insignia mal" data-insignia>Sin datos</span>
-      <button class="principal" data-pedir disabled>Pedir</button>
+      <button class="principal" data-pedir="1" disabled>Pedir</button>
     </section>
 
-    <section class="tarjeta" id="tarjeta-2">
+    <!-- ===== 2. PEPSI (con datos: nivel) ===== -->
+    <section class="tarjeta c2" id="tarjeta-2">
       <div class="cabecera">
-  <img class="logo" src="Pepsi_2023.svg" alt="Logo Pepsi">
-  <h2>Pepsi</h2>
-</div>
+        <img class="logo" src="Pepsi_2023.svg" alt="Logo Pepsi">
+        <h2>Pepsi</h2>
+      </div>
       <div class="fila"><span>Nivel</span><span class="num"><span data-nivel>--</span> L</span></div>
       <div class="barra"><div data-barra></div></div>
       <span class="insignia mal" data-insignia>Sin datos</span>
-      <button class="principal" data-pedir disabled>Pedir</button>
+      <button class="principal" data-pedir="2" disabled>Pedir</button>
     </section>
+
+    <!-- ===== 3. MANZANA (sin sensor: solo pedir) ===== -->
+    <section class="tarjeta c3" id="tarjeta-3">
+      <div class="cabecera">
+        <!-- LOGO MANZANA: quita las marcas de comentario de la etiqueta img y escribe el nombre de tu imagen
+        <img class="logo" src="manzana.png" alt="Logo Manzana">
+        -->
+        <h2>Manzana</h2>
+      </div>
+      <button class="principal" data-pedir="3">Pedir</button>
+    </section>
+
+    <!-- ===== 4. QUATRO (sin sensor: solo pedir) ===== -->
+    <section class="tarjeta c4" id="tarjeta-4">
+      <div class="cabecera">
+        <!-- LOGO QUATRO: quita las marcas de comentario de la etiqueta img y escribe el nombre de tu imagen
+        <img class="logo" src="quatro.png" alt="Logo Quatro">
+        -->
+        <h2>Quatro</h2>
+      </div>
+      <button class="principal" data-pedir="4">Pedir</button>
+    </section>
+
+    <!-- ===== 5. UVA (sin sensor: solo pedir) ===== -->
+    <section class="tarjeta c5" id="tarjeta-5">
+      <div class="cabecera">
+        <!-- LOGO UVA: quita las marcas de comentario de la etiqueta img y escribe el nombre de tu imagen
+        <img class="logo" src="uva.png" alt="Logo Uva">
+        -->
+        <h2>Uva</h2>
+      </div>
+      <button class="principal" data-pedir="5">Pedir</button>
+    </section>
+
   </div>
 </main>
 
 <dialog id="dialogo">
   <div class="cabecera">
-  <img class="logo" id="dlg-logo" src="images.jpg" alt="">
-  <h2 id="dlg-titulo">Coca-Cola</h2>
-</div>
+    <img class="logo" id="dlg-logo" src="images.jpg" alt="">
+    <h2 id="dlg-titulo">Coca-Cola</h2>
+  </div>
   <p>Cantidad</p>
   <div class="tamanos">
     <button data-oz="7">7 oz</button>
@@ -103,9 +149,11 @@
 
 <script>
 // ============ CAMBIA SOLO ESTAS DOS LÍNEAS ============
-const DB_URL = "https://dispensador-de-gaseosa-default-rtdb.firebaseio.com/";  // la misma que en la ESP32
+const DB_URL = "https://dispensador-de-gaseosa-default-rtdb.firebaseio.com";  // la misma que en la ESP32
 const CAPACIDAD_L = 2.5;   // litros que caben en tu botella cortada (llena hasta su nivel máximo)
 // ======================================================
+
+const BASE = DB_URL.replace(/\/+$/, "");   // quita la "/" final si la hay
 
 const MENSAJES = {
   libre: "Listo para servir",
@@ -114,8 +162,19 @@ const MENSAJES = {
   sin_vaso: "No hay vaso, por favor verifique",
   nivel_insuficiente: "No hay suficiente bebida para esa cantidad"
 };
-const NOMBRES = { 1: "Coca-Cola", 2: "Pepsi" };
-const LOGOS = { 1: "images.jpg", 2: "Pepsi_2023.svg" };
+
+const NOMBRES = { 1: "Coca-Cola", 2: "Pepsi", 3: "Manzana", 4: "Quatro", 5: "Uva" };
+
+// Logos de la ventana de cantidad. Para agregar uno, cambia null por el nombre de la imagen.
+const LOGOS = {
+  1: "images.jpg",
+  2: "Pepsi_2023.svg",
+  3: null,   // LOGO MANZANA: cambia null por "manzana.png"
+  4: null,   // LOGO QUATRO: cambia null por "quatro.png"
+  5: null    // LOGO UVA: cambia null por "uva.png"
+};
+
+const SIN_SENSOR = [3, 4, 5];   // bebidas sin sensor: no muestran datos
 const OZ_POR_LITRO = 33.814;
 let datos = { 1: null, 2: null };
 let bebidaActual = 1;
@@ -124,7 +183,7 @@ let ultimoTs = null, ultimoCambio = Date.now();
 const $ = (s, r = document) => r.querySelector(s);
 
 async function leer(ruta) {
-  const r = await fetch(`${DB_URL}${ruta}.json`);
+  const r = await fetch(`${BASE}${ruta}.json`);
   return r.json();
 }
 
@@ -147,16 +206,21 @@ function pintarTarjeta(n, g) {
 async function actualizarDatos() {
   try {
     const d = await leer("/gaseosas");
-    if (!d) return;
-    datos = { 1: d.g1, 2: d.g2 };
-    pintarTarjeta(1, d.g1);
-    pintarTarjeta(2, d.g2);
-    if (d.ts !== ultimoTs) { ultimoTs = d.ts; ultimoCambio = Date.now(); }
+    if (d) {
+      datos = { 1: d.g1, 2: d.g2 };
+      pintarTarjeta(1, d.g1);
+      pintarTarjeta(2, d.g2);
+      if (d.ts !== ultimoTs) { ultimoTs = d.ts; ultimoCambio = Date.now(); }
+    }
   } catch (e) { /* se refleja en el indicador de conexión */ }
+
   const viva = Date.now() - ultimoCambio < 20000;
   const c = $("#conexion");
   c.textContent = viva ? "Conectado al dispensador" : "Sin conexión con el dispensador";
   c.classList.toggle("caida", !viva);
+
+  // Las bebidas sin sensor solo se pueden pedir si el dispensador está conectado
+  SIN_SENSOR.forEach(n => { $(`#tarjeta-${n} [data-pedir]`).disabled = !viva; });
 }
 
 async function actualizarEstado() {
@@ -170,19 +234,33 @@ async function actualizarEstado() {
 }
 
 // Ventana de cantidad
-document.querySelectorAll("[data-pedir]").forEach((b, i) => {
+document.querySelectorAll("[data-pedir]").forEach(b => {
   b.addEventListener("click", () => {
-    bebidaActual = i + 1;
+    bebidaActual = Number(b.dataset.pedir);
+    const sinSensor = SIN_SENSOR.includes(bebidaActual);
+
+    $("#dialogo").className = "c" + bebidaActual;   // color pastel de la gaseosa
     $("#dlg-titulo").textContent = NOMBRES[bebidaActual];
-    $("#dlg-logo").src = LOGOS[bebidaActual];
+
+    const logo = $("#dlg-logo");
+    if (LOGOS[bebidaActual]) {
+      logo.src = LOGOS[bebidaActual];
+      logo.hidden = false;
+    } else {
+      logo.hidden = true;
+    }
+
     $("#dlg-aviso").textContent = "";
+
+    // Con sensor: se bloquean las cantidades que no alcanzan. Sin sensor: todas disponibles.
     const disponibleOz = (datos[bebidaActual]?.nivel || 0) * OZ_POR_LITRO;
     document.querySelectorAll("[data-oz]").forEach(btn => {
-      btn.disabled = Number(btn.dataset.oz) > disponibleOz;
+      btn.disabled = sinSensor ? false : Number(btn.dataset.oz) > disponibleOz;
     });
-    if (disponibleOz < 12) {
+    if (!sinSensor && disponibleOz < 12) {
       $("#dlg-aviso").textContent = `Solo quedan ${disponibleOz.toFixed(1)} oz de esta gaseosa.`;
     }
+
     $("#dialogo").showModal();
   });
 });
@@ -193,7 +271,7 @@ document.querySelectorAll("[data-oz]").forEach(btn => {
   btn.addEventListener("click", async () => {
     $("#dialogo").close();
     const pedido = { activo: true, bebida: bebidaActual, onzas: Number(btn.dataset.oz) };
-    await fetch(`${DB_URL}/pedido.json`, { method: "PUT", body: JSON.stringify(pedido) });
+    await fetch(`${BASE}/pedido.json`, { method: "PUT", body: JSON.stringify(pedido) });
   });
 });
 
