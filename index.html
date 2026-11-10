@@ -72,7 +72,7 @@
     <!-- ===== 1. COCA-COLA (con datos: temperatura y nivel) ===== -->
     <section class="tarjeta c1" id="tarjeta-1">
       <div class="cabecera">
-        <img class="logo" src="images.jpg" alt="Logo Coca-Cola">
+        <img class="logo" src="cocacola.png" alt="Logo Coca-Cola">
         <h2>Coca-Cola</h2>
       </div>
       <div class="fila"><span>Temperatura</span><span class="num"><span data-temp>--</span> °C</span></div>
@@ -97,9 +97,8 @@
     <!-- ===== 3. MANZANA (sin sensor: solo pedir) ===== -->
     <section class="tarjeta c3" id="tarjeta-3">
       <div class="cabecera">
-        <!-- LOGO MANZANA: quita las marcas de comentario de la etiqueta img y escribe el nombre de tu imagen
-        <img class="logo" src="manzana.png" alt="Logo Manzana">
-        -->
+        <img class="logo" src="logo_manzana_postobon.png" alt="Logo Manzana">
+        
         <h2>Manzana</h2>
       </div>
       <button class="principal" data-pedir="3">Pedir</button>
@@ -108,9 +107,8 @@
     <!-- ===== 4. QUATRO (sin sensor: solo pedir) ===== -->
     <section class="tarjeta c4" id="tarjeta-4">
       <div class="cabecera">
-        <!-- LOGO QUATRO: quita las marcas de comentario de la etiqueta img y escribe el nombre de tu imagen
-        <img class="logo" src="quatro.png" alt="Logo Quatro">
-        -->
+        <img class="logo" src="images.jpg" alt="Logo Quatro">
+        
         <h2>Quatro</h2>
       </div>
       <button class="principal" data-pedir="4">Pedir</button>
@@ -119,9 +117,7 @@
     <!-- ===== 5. UVA (sin sensor: solo pedir) ===== -->
     <section class="tarjeta c5" id="tarjeta-5">
       <div class="cabecera">
-        <!-- LOGO UVA: quita las marcas de comentario de la etiqueta img y escribe el nombre de tu imagen
-        <img class="logo" src="uva.png" alt="Logo Uva">
-        -->
+        <img class="logo" src="postobon_informacion_nutriconallogo-uva-p-e1687378302720.png" alt="Logo Uva">
         <h2>Uva</h2>
       </div>
       <button class="principal" data-pedir="5">Pedir</button>
@@ -132,7 +128,7 @@
 
 <dialog id="dialogo">
   <div class="cabecera">
-    <img class="logo" id="dlg-logo" src="images.jpg" alt="">
+    <img class="logo" id="dlg-logo" src="cocacola.png" alt="">
     <h2 id="dlg-titulo">Coca-Cola</h2>
   </div>
   <p>Cantidad</p>
@@ -167,10 +163,10 @@ const NOMBRES = { 1: "Coca-Cola", 2: "Pepsi", 3: "Manzana", 4: "Quatro", 5: "Uva
 
 // Logos de la ventana de cantidad. Para agregar uno, cambia null por el nombre de la imagen.
 const LOGOS = {
-  1: "images.jpg",
+  1: "cocacola.png",
   2: "Pepsi_2023.svg",
-  3: null,   // LOGO MANZANA: cambia null por "manzana.png"
-  4: null,   // LOGO QUATRO: cambia null por "quatro.png"
+  3: logo_manzana_postobon.png,   // LOGO MANZANA: cambia null por "manzana.png"
+  4: images.jpg,   // LOGO QUATRO: cambia null por "quatro.png"
   5: postobon_informacion_nutriconallogo-uva-p-e1687378302720.png // LOGO UVA: cambia null por "uva.png"
 };
 
