@@ -145,13 +145,14 @@
 <script>
 // ============ CAMBIA SOLO ESTAS DOS LÍNEAS ============
 const DB_URL = "https://dispensador-de-gaseosa-default-rtdb.firebaseio.com";  // la misma que en la ESP32
-const CAPACIDAD_L = 2.5;   // litros que caben en tu botella cortada (llena hasta su nivel máximo)
+const CAPACIDAD_L = 3.0;   // litros de tu botella (3 L)
 // ======================================================
 
 const BASE = DB_URL.replace(/\/+$/, "");   // quita la "/" final si la hay
 
 const MENSAJES = {
   libre: "Listo para servir",
+  apagado: "El dispensador está apagado",
   sirviendo: "Ya se está sirviendo su bebida",
   lista: "Su bebida está lista",
   sin_vaso: "No hay vaso, por favor verifique",
@@ -164,9 +165,9 @@ const NOMBRES = { 1: "Coca-Cola", 2: "Pepsi", 3: "Manzana", 4: "Quatro", 5: "Uva
 const LOGOS = {
   1: "cocacola.png",
   2: "Pepsi_2023.svg",
-  3: logo_manzana_postobon.png,   // LOGO MANZANA: cambia null por "manzana.png"
-  4: images.jpg,   // LOGO QUATRO: cambia null por "quatro.png"
-  5: postobon_informacion_nutriconallogo-uva-p-e1687378302720.png // LOGO UVA: cambia null por "uva.png"
+  3: "logo_manzana_postobon.png",
+  4: "images.jpg",
+  5: "postobon_informacion_nutriconallogo-uva-p-e1687378302720.png"
 };
 
 const SIN_SENSOR = [3, 4, 5];   // bebidas sin sensor: no muestran datos
